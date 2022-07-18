@@ -5,6 +5,7 @@ import { DataSource } from 'typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
 
 const dbconfig: TypeOrmModuleOptions = {
   type: 'postgres',
@@ -18,7 +19,7 @@ const dbconfig: TypeOrmModuleOptions = {
 };
 
 @Module({
-  imports: [TypeOrmModule.forRoot(dbconfig), UsersModule],
+  imports: [TypeOrmModule.forRoot(dbconfig), UsersModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })

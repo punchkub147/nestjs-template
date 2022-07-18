@@ -7,12 +7,17 @@ import {
   Param,
   Delete,
   NotFoundException,
+  UseGuards,
 } from '@nestjs/common';
+import { ApiBearerAuth } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('users')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -35,15 +40,17 @@ export class UsersController {
 
   @Patch(':id')
   async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+    await this.usersService.update(id, updateUserDto);
     const user = await this.usersService.findOne(id);
     if (!user) throw new NotFoundException();
-    return this.usersService.update(id, updateUserDto);
+    return user;
   }
 
   @Delete(':id')
   async remove(@Param('id') id: number) {
     const user = await this.usersService.findOne(id);
     if (!user) throw new NotFoundException();
-    return this.usersService.remove(id);
+    await this.usersService.remove(id);
+    return user;
   }
 }

@@ -5,8 +5,8 @@ export function setupSwagger(app: INestApplication): void {
   const options = new DocumentBuilder()
     .setTitle('NestJS Documentation')
     .setVersion('1.0.0')
+    .addBearerAuth()
     .build();
-
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('documentation', app, document);
 }
