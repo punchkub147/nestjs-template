@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -26,17 +27,23 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.usersService.findOne(+id);
+  async findOne(@Param('id') id: number) {
+    const user = await this.usersService.findOne(id);
+    if (!user) throw new NotFoundException();
+    return user;
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+  async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+    const user = await this.usersService.findOne(id);
+    if (!user) throw new NotFoundException();
     return this.usersService.update(id, updateUserDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: number) {
+  async remove(@Param('id') id: number) {
+    const user = await this.usersService.findOne(id);
+    if (!user) throw new NotFoundException();
     return this.usersService.remove(id);
   }
 }

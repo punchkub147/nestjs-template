@@ -2,6 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { setupSwagger } from './utils/swagger';
 
 async function bootstrap() {
@@ -16,6 +17,8 @@ async function bootstrap() {
       disableErrorMessages: false,
     }),
   );
+
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   setupSwagger(app);
 
