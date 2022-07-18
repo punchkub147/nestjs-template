@@ -29,6 +29,14 @@ export class UsersService {
     return this.usersRepository.findOneBy(where);
   }
 
+  findByUsername(username: string): Promise<User> {
+    return this.usersRepository
+      .createQueryBuilder()
+      .select('*')
+      .where({ username })
+      .getRawOne();
+  }
+
   update(id: number, updateUserDto: UpdateUserDto) {
     return this.usersRepository.update(id, updateUserDto);
   }
