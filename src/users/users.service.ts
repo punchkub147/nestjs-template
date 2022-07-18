@@ -13,7 +13,8 @@ export class UsersService {
   ) {}
 
   create(createUserDto: CreateUserDto) {
-    return this.usersRepository.save(createUserDto);
+    const user = this.usersRepository.create(createUserDto);
+    return this.usersRepository.save(user);
   }
 
   findAll(): Promise<User[]> {
@@ -22,6 +23,10 @@ export class UsersService {
 
   findOne(id: number): Promise<User> {
     return this.usersRepository.findOneBy({ id });
+  }
+
+  findOneBy(where): Promise<User> {
+    return this.usersRepository.findOneBy(where);
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
