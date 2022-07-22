@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ExceptionFilter,
   Catch,
   ArgumentsHost,
@@ -26,7 +27,9 @@ export class AllExceptionFilter implements ExceptionFilter {
 
     switch (exception.constructor) {
       case HttpException:
+      case BadRequestException:
         status = (exception as HttpException).getStatus();
+        message = (exception as HttpException).getResponse()['message'];
         break;
       case QueryFailedError:
         status = HttpStatus.UNPROCESSABLE_ENTITY;
