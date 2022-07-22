@@ -16,8 +16,16 @@ export class ArticlesService {
     return this.repository.save(user);
   }
 
-  async findAll(): Promise<Entity[]> {
-    return this.repository.find();
+  async findAll(search: string): Promise<Entity[]> {
+    const columns = ['title', 'content'];
+    const searchQuery = `CONCAT("${columns.join('","')}") LIKE '%${search}%'`;
+
+    const list = await this.repository
+      .createQueryBuilder('articles')
+      .where(searchQuery)
+      .getMany();
+
+    return list;
   }
 
   async findOne(id: number): Promise<Entity> {
