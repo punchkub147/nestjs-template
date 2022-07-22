@@ -12,6 +12,7 @@ export class CreateUserDto {
 
   @ApiProperty({ default: 'Admin' })
   @IsString()
+  @IsOptional()
   firstName: string;
 
   @ApiProperty({ default: null })
@@ -21,5 +22,6 @@ export class CreateUserDto {
 
   @ApiProperty({ default: true })
   @IsBoolean()
+  @IsOptional()
   isActive: boolean;
 }

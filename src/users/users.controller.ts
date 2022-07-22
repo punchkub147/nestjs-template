@@ -28,28 +28,31 @@ export class UsersController {
 
   @Get()
   findAll() {
-    return this.usersService.findAll();
+    const users = this.usersService.findAll();
+    return users;
   }
 
   @Get(':id')
   async findOne(@Param('id') id: number) {
+    await this.usersService._checkNotFound(id);
+
     const user = await this.usersService.findOne(id);
-    if (!user) throw new NotFoundException();
     return user;
   }
 
   @Patch(':id')
   async update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+    await this.usersService._checkNotFound(id);
+
     await this.usersService.update(id, updateUserDto);
     const user = await this.usersService.findOne(id);
-    if (!user) throw new NotFoundException();
     return user;
   }
 
   @Delete(':id')
   async remove(@Param('id') id: number) {
-    const user = await this.usersService.findOne(id);
-    if (!user) throw new NotFoundException();
+    const user = await this.usersService._checkNotFound(id);
+
     await this.usersService.remove(id);
     return user;
   }

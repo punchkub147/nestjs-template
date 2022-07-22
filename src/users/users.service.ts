@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 
 @Injectable()
@@ -12,24 +12,31 @@ export class UsersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
+  async create(createUserDto: CreateUserDto) {
     const user = this.usersRepository.create(createUserDto);
     return this.usersRepository.save(user);
   }
 
-  findAll(): Promise<User[]> {
+  async findAll(): Promise<User[]> {
     return this.usersRepository.find();
   }
 
-  findOne(id: number): Promise<User> {
+  async findOne(id: number): Promise<User> {
     return this.usersRepository.findOneBy({ id });
   }
 
-  findOneBy(where): Promise<User> {
-    return this.usersRepository.findOneBy(where);
+  async findOneBy(where): Promise<User> {
+    const user = await this.usersRepository.findOneBy(where);
+    return user;
   }
 
-  findByUsername(username: string): Promise<User> {
+  async _checkNotFound(where): Promise<User> {
+    const user = await this.usersRepository.findOneBy(where);
+    if (!user) throw new NotFoundException();
+    return user;
+  }
+
+  async findByUsername(username: string): Promise<User> {
     return this.usersRepository
       .createQueryBuilder()
       .select('*')
@@ -37,11 +44,17 @@ export class UsersService {
       .getRawOne();
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return this.usersRepository.update(id, updateUserDto);
+  async update(where, data) {
+    const user = await this.findOneBy(where);
+    await this.usersRepository.update(where, Object.assign(user, data));
+    return this.findOneBy(user.id);
   }
 
-  remove(id: number) {
+  async createResetPasswordToken(username: string) {
+    return this.update({ username }, { resetPasswordToken: uuidv4() });
+  }
+
+  async remove(id: number) {
     return this.usersRepository.delete(id);
   }
 }

@@ -27,9 +27,17 @@ export class User {
   @Column({ select: false })
   password: string;
 
+  @Column({ unique: true, nullable: true })
+  resetPasswordToken: string;
+
   @BeforeInsert()
   @BeforeUpdate()
   async hashPassword() {
-    this.password = await bcrypt.hash(this.password, 10);
+    if (this.password) this.password = await bcrypt.hash(this.password, 10);
+  }
+
+  @BeforeInsert()
+  async defaultFirstName() {
+    if (!this.firstName) this.firstName = this.username;
   }
 }

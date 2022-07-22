@@ -6,6 +6,7 @@ import {
   HttpException,
   HttpStatus,
   UnauthorizedException,
+  NotFoundException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import {
@@ -27,6 +28,7 @@ export class AllExceptionFilter implements ExceptionFilter {
 
     switch (exception.constructor) {
       case HttpException:
+      case NotFoundException:
       case BadRequestException:
         status = (exception as HttpException).getStatus();
         message = (exception as HttpException).getResponse()['message'];
