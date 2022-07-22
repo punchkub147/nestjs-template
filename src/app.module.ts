@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { ArticlesModule } from './articles/articles.module';
 
 const dbconfig: TypeOrmModuleOptions = {
   type: 'postgres',
@@ -19,7 +20,12 @@ const dbconfig: TypeOrmModuleOptions = {
 };
 
 @Module({
-  imports: [TypeOrmModule.forRoot(dbconfig), UsersModule, AuthModule],
+  imports: [
+    TypeOrmModule.forRoot(dbconfig),
+    UsersModule,
+    AuthModule,
+    ArticlesModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

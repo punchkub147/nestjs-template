@@ -36,8 +36,7 @@ export class UsersController {
   async findOne(@Param('id') id: number) {
     await this.usersService._checkNotFound(id);
 
-    const user = await this.usersService.findOne(id);
-    return user;
+    return this.usersService.findOne(id);
   }
 
   @Patch(':id')
@@ -45,15 +44,14 @@ export class UsersController {
     await this.usersService._checkNotFound(id);
 
     await this.usersService.update(id, updateUserDto);
-    const user = await this.usersService.findOne(id);
-    return user;
+    return this.usersService.findOne(id);
   }
 
   @Delete(':id')
   async remove(@Param('id') id: number) {
-    const user = await this.usersService._checkNotFound(id);
+    await this.usersService._checkNotFound(id);
 
     await this.usersService.remove(id);
-    return user;
+    return this.usersService.findOne(id);
   }
 }
